@@ -1,0 +1,19 @@
+    public ActionResult GetData()
+    {
+        // get json data from website
+        HttpWebRequest request = WebRequest.CreateHttp("http://forecast.weather.gov/MapClick.php?lat=42.335722&lon=-83.049944&FcstType=json");
+        // process data for multiple web browsers
+        request.UserAgent = @"User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36";
+        // return response and cast to HTTP
+        HttpWebResponse response = (HttpWebResponse) request.GetResponse();
+        // read the response
+        StreamReader rd = new StreamReader(response.GetResponseStream());
+        // reads the data, and this is what we call to from our view
+        string ApiText = rd.ReadToEnd();
+        // parse the data to JSON
+        JObject weatherData = JObject.Parse(ApiText);
+
+        // ViewBag.ApiText = weatherData["operationalMode"];
+        ViewBag.ApiText = weatherData["data"]["text"][0];
+        return View("APIView");
+    }
